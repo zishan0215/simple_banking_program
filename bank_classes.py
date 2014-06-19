@@ -97,26 +97,22 @@ class Customers:
             return "Customer not found"
         else:
             self.customers[acc_number][1] += amount
-            self.update(acc_number)    
+            self.update(acc_number)
+
+    def withdraw(self, acc_number, amount):
+        if acc_number in self.customers:
+            if amount > 0 and amount <= self.customers[acc_number][1]:
+                self.customers[acc_number][1] -= amount
+                self.update(acc_number)
+            else:
+                return 'Invalid amount'
+        else:
+            return 'Customer not found'
         
 cus = Customers()
 print cus
-cus.add_customer('zishan', 5000)
-print cus
 
-import pickle
-fp = open('customers.txt')
-x = pickle.load(fp)
-print x
-fp.close
 
-cus.add_customer('tausif', 9866)
-print cus
-
-fp = open('customers.txt')
-x = pickle.load(fp)
-print x
-fp.close
 
 
 
