@@ -22,12 +22,12 @@ if __name__ == '__main__':
     con.execute('''
                     INSERT INTO bank(id, name, location, capital, customers, employees)
                     VALUES (1,'The Python Bank', 'Toshiba Satellite', 10000000,
-                    0, 1)
+                    0, 1);
                 ''')
     con.execute('''
                     INSERT INTO employees(id, name, password, salary,
                     position, location) VALUES (1, 'Zishan',
-                    'Zishan2', 100000, 'CEO', 'Toshiba Satellite')
+                    'Zishan2', 100000, 'CEO', 'Toshiba Satellite');
                 ''')
     con.commit()
     con.close()

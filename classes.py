@@ -18,6 +18,7 @@ class Bank:
             self.customers = i[self.attr['customers']]
             self.employees = i[self.attr['employees']]
         con.close()
+        
     def __str__(self):
         return self.name + '\n' + self.addr + '\nCapital: $' + str(self.capital) + '\nEmployees: ' + str(self.employees) + '\nCustomers: ' + str(self.customers)
 
@@ -36,6 +37,7 @@ class Employees:
                                              i[self.attr['salary']],
                                              i[self.attr['position']],
                                              i[self.attr['location']]]
+        con.close()
 
     def __str__(self):
         s = "Id\tName\t\tSalary\t\tPosition\tLocation\n"
@@ -48,41 +50,38 @@ class Employees:
 
 
 class Customers:
-    name = 0
-    balance = 1
-    loan_id = 0
-    loan_amount = 1
-    emi = 2
-    credit = 3
-    period = 4
-    loan_detail = []
+    attr = {'id': 0, 'name': 1, 'password': 2, 'balance': 3, 'loans': 4,
+            'account_number': 5, 'credit_card_number': 6}
+    customers = {}
     ## constructors
     def __init__(self):
-        try:
-            fp = open('customers.txt')
-            self.customers = pickle.load(fp)
-            fp.close()
-        except IOError:
-            fp = open('customers.txt', 'w')
-            self.customers = {}
-            pickle.dump(self.customers, fp)
-            fp.close()
-            os.mkdir('loan')
+        con = sqlite3.connect('bank_data.db')
+        cur = con.execute('SELECT * FROM customers')
+        for i in cur:
+            self.customers[i[self.attr['id']]] = [i[self.attr['id']],
+                                                  i[self.attr['name']],
+                                                  i[self.attr['password']],
+                                                  i[self.attr['balance']],
+                                                  i[self.attr['loans']],
+                                                  i[self.attr['account_number']],
+                                                  i[self.attr['credit_card_number']]]
+        con.close()
 
     def __str__(self):
         if self.customers == {}:
             return "No customers\n"
         else:
             s = "Name\t\tAccount Number\t\tBalance\n"
-            for acc_number in self.customers.keys():
-                s += str(self.customers[acc_number][self.name]) + '\t\t' + str(acc_number) + '\t\t' + str(self.customers[acc_number][self.balance]) + '\n'
+            for cid in self.customers.keys():
+                s += str(cid) + '\t' + self.customers[cid][self.attr['name']] + '\t'
+                s += self.customers[cid][self.attr['account_number']] + '\t\t'
+                s += self.customers[cid][self.attr['balance']] + '\t\t'
+                s += self.customers[cid][self.attr['credit_card_number']] + '\n'
             return s                
     
     ## methods
-    def update(self, acc_number):
-        fp = open('customers.txt', 'w')
-        pickle.dump(self.customers, fp)
-        fp.close()
+    def update(self):
+        self.__init__(self)
 
     def update_loan(self, acc_number, loan_detail):
         path = 'loan/' + str(acc_number) + '.txt'
@@ -96,14 +95,18 @@ class Customers:
         pickle.dump(loan_detail, fp)
         fp.close()
         
-    def add_customer(self, name = '', deposit = 1000):
+    def add_customer(self, cname = '', cpassword = '', cdeposit = 1000.00):
         x = random.randrange(1000, 10000000)
         acc_number = 100000000 + x
-        while acc_number in self.customers:
-            x = random.randrange(1000, 10000000)
-            acc_number = 100000000 + x
-        self.customers[acc_number] = [name, deposit]
-        self.update(acc_number)
+        con = sqlite3.connect('bank_data.db')   
+        con.execute('''
+                        INSERT INTO customers(id, name, password, balance,
+                        loans, account_number, credit_card_number) VALUES
+                        (%d, %s, %s, %f, %d, %d, %d);
+                    ''' % (1, cname, cpassword, cdeposit, 0, acc_number, 0))
+        con.commit()
+        con.close()
+        self.upadate()
         return "Customer added"
 
     def check_balance(self, acc_number):
@@ -180,4 +183,11 @@ class Customers:
 
 e = Employees()
 print e
+
+c = Customers()
+print c
+
+print c.add_customer('Smith', 'Smith2', 1000)
+
+print c
 
