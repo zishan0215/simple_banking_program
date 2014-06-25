@@ -23,9 +23,11 @@ class Bank:
         return self.name + '\n' + self.addr + '\nCapital: $' + str(self.capital) + '\nEmployees: ' + str(self.employees) + '\nCustomers: ' + str(self.customers)
 
 class Employees:
+    ## Properties
     attr = {'id': 0, 'name': 1, 'password': 2, 'salary': 3, 'position': 4,
             'location': 5}
     employees = {}
+
     ## constructors
     def __init__(self):
         con = sqlite3.connect('bank_data.db')
@@ -47,6 +49,25 @@ class Employees:
             s += self.employees[eid][self.attr['position']] + '\t\t'
             s += self.employees[eid][self.attr['location']] + '\n'
         return s
+
+    ## methods
+    def get_id(self, ename):
+        for i in self.employees.keys():
+            if self.employees[i][self.attr['name']] == ename:
+                return i
+        return -1
+    
+    def check_login(self,ename,epassword):
+        eid = self.get_id(ename)
+        if eid == -1:
+            return -1
+        if self.employees[eid][self.attr['name']] == ename:
+            if self.employees[eid][self.attr['password']] == epassword:
+                return 1
+            else:
+                return -2
+        else:
+            return -3
 
 
 class Customers:
@@ -169,25 +190,24 @@ class Customers:
         
     def pay_emi(self):
          pass
-
-##cid = 109314064        
-##cus = Customers()
-##print cus
-##print cus.check_balance(cid)
-#### cus.deposit(cid, 2000)
-#### cus.withdraw(cid, 190000)
-#### print cus.check_balance(cid)
-##print cus.loan(1000, 10, 40000, cid)
-#### print cus.check_balance(cid)
-##cus.print_loan_details(cid)
-
-e = Employees()
-print e
-
-c = Customers()
-print c
-
-print c.add_customer('Smith', 'Smith2', 1000)
-
-print c
-
+if __name__ == '__main__':
+##    cid = 109314064        
+##    cus = Customers()
+##    print cus
+##    print cus.check_balance(cid)
+##    cus.deposit(cid, 2000)
+##    cus.withdraw(cid, 190000)
+##    print cus.check_balance(cid)
+##    print cus.loan(1000, 10, 40000, cid)
+##    print cus.check_balance(cid)
+##    cus.print_loan_details(cid)
+##
+      e = Employees()
+      print e
+##
+##    c = Customers()
+##    print c
+##
+##    print c.add_customer('Smith', 'Smith2', 1000)
+##
+##    print c
