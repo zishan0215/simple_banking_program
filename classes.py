@@ -1,4 +1,4 @@
-# Class definitions for the bank project
+## Class definitions for the bank project
 import pickle
 import os
 import random
@@ -8,7 +8,7 @@ import sqlite3
 class Bank:
     attr = {'id': 0, 'name': 1, 'location': 2, 'capital': 3,
             'customers': 4, 'employees': 5}
-    # constructors
+    ## constructors
 
     def __init__(self):
         con = sqlite3.connect('bank_data.db')
@@ -26,12 +26,12 @@ class Bank:
 
 
 class Employees:
-    # Properties
+    ## Properties
     attr = {'id': 0, 'name': 1, 'password': 2, 'salary': 3, 'position': 4,
             'location': 5}
     employees = {}
 
-    # constructors
+    ## constructors
     def __init__(self):
         con = sqlite3.connect('bank_data.db')
         cur = con.execute('SELECT * FROM employees')
@@ -54,7 +54,7 @@ class Employees:
             s += self.employees[eid][self.attr['location']] + '\n'
         return s
 
-    # methods
+    ## methods
     def get_id(self, ename):
         for i in self.employees.keys():
             if self.employees[i][self.attr['name']] == ename:
@@ -78,39 +78,37 @@ class Customers:
     attr = {'id': 0, 'name': 1, 'password': 2, 'balance': 3, 'loans': 4,
             'account_number': 5, 'credit_card_number': 6}
     customers = {}
-    # constructors
+    ## constructors
 
     def __init__(self):
         con = sqlite3.connect('bank_data.db')
         cur = con.execute('SELECT * FROM customers')
         for i in cur:
-            self.customers[i[self.attr['id']]] = [i[self.attr['id']],
-                                                  i[self.attr['name']],
-                                                  i[self.attr['password']],
-                                                  i[self.attr['balance']],
-                                                  i[self.attr['loans']],
-                                                  i[self.attr[
-                                                      'account_number']],
-                                                  i[self.attr['credit_card_number']]]
+            self.customers[i[self.attr['account_number']]] = [i[self.attr['id']],
+                                                              i[self.attr['name']],
+                                                              i[self.attr['password']],
+                                                              i[self.attr['balance']],
+                                                              i[self.attr['loans']],
+                                                              i[self.attr['account_number']],
+                                                              i[self.attr['credit_card_number']]]
         con.close()
 
     def __str__(self):
         if self.customers == {}:
             return "No customers\n"
         else:
-            s = "Name\t\tAccount Number\t\tBalance\n"
-            for cid in self.customers.keys():
-                s += str(cid) + '\t' + self.customers[
-                    cid][self.attr['name']] + '\t'
-                s += self.customers[cid][self.attr['account_number']] + '\t\t'
-                s += self.customers[cid][self.attr['balance']] + '\t\t'
-                s += self.customers[cid][
-                    self.attr['credit_card_number']] + '\n'
+            s = "Id\tName\t\tAccount Number\t\tBalance\t\tCredit Card Number\n"
+            for acc_num in self.customers.keys():
+                s += str(self.customers[acc_num][self.attr['id']]) + '\t'
+                s += self.customers[acc_num][self.attr['name']] + '\t\t'
+                s += str(self.customers[acc_num][self.attr['account_number']]) + '\t\t'
+                s += str(self.customers[acc_num][self.attr['balance']]) + '\t\t'
+                s += str(self.customers[acc_num][self.attr['credit_card_number']]) + '\n'
             return s
 
-    # methods
+    ## methods
     def update(self):
-        self.__init__(self)
+        self.__init__()
 
     def update_loan(self, acc_number, loan_detail):
         path = 'loan/' + str(acc_number) + '.txt'
@@ -128,6 +126,17 @@ class Customers:
         x = random.randrange(1000, 10000000)
         acc_number = 100000000 + x
         con = sqlite3.connect('bank_data.db')
+        i = 0
+        cur = con.execute('SELECT * FROM customers WHERE account_number = %d' % (acc_number))
+        for i in cur:
+            pass
+        while i != 0:
+            x = random.randrange(1000, 10000000)
+            acc_number = 100000000 + x
+            i = 0
+            cur = con.execute('SELECT * FROM customers WHERE account_number = %d' % (acc_number))
+            for i in cur:
+                pass
         query = '''
                         INSERT INTO customers(id, name, password, balance,
                         loans, account_number, credit_card_number) VALUES
@@ -150,6 +159,10 @@ class Customers:
         else:
             return "Customer not Found"
 
+    def get_amount(self, acc_number):
+        x = self.check_balance(acc_number)
+        return x[3]
+
     def deposit(self, acc_number, amount):
         if acc_number in self.customers:
             if amount < 1:
@@ -157,8 +170,14 @@ class Customers:
             elif acc_number not in self.customers:
                 return "Customer not found"
             else:
-                self.customers[acc_number][self.balance] += amount
-                self.update(acc_number)
+                amount += self.get_amount(acc_number)
+                con = sqlite3.connect('bank_data.db')
+                con.execute('''UPDATE customers SET balance = %d
+                            WHERE account_number = %d''' % (amount, acc_number))
+                con.commit()
+                con.close()
+                self.update()
+                return 'Amount deposited. \nTotal balance: %d' % (amount)
         else:
             return 'Customer not found'
 
@@ -205,24 +224,30 @@ class Customers:
 
     def pay_emi(self):
         pass
+
+
 if __name__ == '__main__':
 ##    cid = 109314064
 ##    cus = Customers()
-# print cus
-# print cus.check_balance(cid)
+## print cus
+## print cus.check_balance(cid)
 ##    cus.deposit(cid, 2000)
 ##    cus.withdraw(cid, 190000)
-# print cus.check_balance(cid)
-# print cus.loan(1000, 10, 40000, cid)
-# print cus.check_balance(cid)
-# cus.print_loan_details(cid)
-#
-    e = Employees()
-    print e
-#
-##    c = Customers()
-# print c
-#
-# print c.add_customer('Smith', 'Smith2', 1000)
-#
-# print c
+## print cus.check_balance(cid)
+## print cus.loan(1000, 10, 40000, cid)
+## print cus.check_balance(cid)
+## cus.print_loan_details(cid)
+##
+##    b = Bank()
+##    print b
+##
+##    
+##    e = Employees()
+##    print e
+##
+    c = Customers()
+    print c
+
+##    print c.add_customer('John', 'John2', 1000)
+##
+##    print c

@@ -8,9 +8,9 @@ if __name__ == '__main__':
                     DOUBLE NOT NULL, customers INT(11), employees INT(11));
                 ''')
     con.execute('''
-                    CREATE TABLE customers(id INT(11) PRIMARY KEY NOT NULL,
+                    CREATE TABLE customers(id INT(11) NOT NULL,
                     name VARCHAR(40) NOT NULL, password VARCHAR(40), balance DOUBLE, 
-                    loans INT(11), account_number INT(11) NOT NULL, credit_card_number INT(11));
+                    loans INT(11), account_number INT(11) PRIMARY KEY NOT NULL, credit_card_number INT(11));
                 ''')
     con.execute('''
                     CREATE TABLE employees(id INT(11) PRIMARY KEY NOT NULL, 
