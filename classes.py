@@ -127,7 +127,7 @@ class Customers:
                     ''' % (1, cname, cpassword, cdeposit, 0, acc_number, 0))
         con.commit()
         con.close()
-        self.upadate()
+        self.update()
         return "Customer added"
 
     def check_balance(self, acc_number):
@@ -202,12 +202,12 @@ if __name__ == '__main__':
 ##    print cus.check_balance(cid)
 ##    cus.print_loan_details(cid)
 ##
-      e = Employees()
-      print e
+##      e = Employees()
+##      print e
 ##
-##    c = Customers()
-##    print c
-##
-##    print c.add_customer('Smith', 'Smith2', 1000)
-##
-##    print c
+    c = Customers()
+    print c
+
+    print c.add_customer('Smith', 'Smith2', 1000)
+
+    print c
