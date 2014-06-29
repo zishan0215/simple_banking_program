@@ -225,6 +225,15 @@ class Customers:
     def pay_emi(self):
         pass
 
+    def check_login(self, acc_number, cpassword):
+        if acc_number in self.customers.keys():
+            if self.customers[acc_number][self.attr['password']] == cpassword:
+                return 1
+            else:
+                return -1
+        else:
+            return -2
+
 
 if __name__ == '__main__':
 ##    cid = 109314064
