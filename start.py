@@ -45,8 +45,24 @@ def admin_login():
     else:
         print "Something's Wrong"
 
-def login():
-    pass
+def customer_area(acc_number):
+    name = c.customers[acc_number][c.attr['name']]
+    print 'Welcome %s!' % (name)
+    
+
+def customer_login():
+    print '\n\nWelcome to customer login\n'
+    acc_number = input('Enter account number: ')
+    password = raw_input('Enter password: ')
+    check = c.check_login(acc_number, password)
+    if check == -1:
+        print 'Wrong password'
+    elif check == -2:
+        print 'Invalid account number'
+    elif check == 1:
+        customer_area(acc_number)
+    else:
+        print "Somthing's Wrong"
 
 def new_customer():
     pass
@@ -74,7 +90,7 @@ def interface2(choice):
         try: 
             choice = input('Enter choice: ')
             if choice == 1:
-                login()
+                customer_login()
             elif choice == 2:
                 new_customer()
             elif choice == 3:
