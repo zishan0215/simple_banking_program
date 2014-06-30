@@ -151,7 +151,7 @@ class Customers:
         except Exception as e :
             print e
             return "Error"
-        return "Customer added"
+        return "Customer added\nYour account number: %d" % (acc_number)
 
     def check_balance(self, acc_number):
         if acc_number in self.customers:
